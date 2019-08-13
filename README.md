@@ -1,2 +1,1 @@
-# react-test1
-https://irinainina.github.io/react-test1/
+# culture-portal
