@@ -5,7 +5,7 @@ https://irinainina.github.io/culture-portal/
 https://github.com/rolling-scopes-school/tasks/blob/2018-Q3/tasks/codejam-culture-portal.md
 
 ## PR:
-https://github.com/irinainina/culture-portal/pull/1
+https://github.com/irinainina/culture-portal/pull/2
 
 ## Screenshot: 
 ![](https://s8.hostingkartinok.com/uploads/images/2019/08/825827203b037e0acabf4618d4cf4e2e.jpg)
