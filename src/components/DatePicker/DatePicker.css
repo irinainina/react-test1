@@ -12,3 +12,15 @@
 .MuiInputBase-root {
   font-size: 22px !important;
 }
+
+@media (max-width: 1100px) {
+  .container {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 450px) {
+  .textField {
+    width: 300px;
+  }
+}

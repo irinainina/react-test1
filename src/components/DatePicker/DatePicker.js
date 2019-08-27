@@ -12,6 +12,14 @@ export default class DatePicker extends Component {
     };
   }
 
+  getDay() {
+    const date = new Date();
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+    const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+
   render() {
     return (
       <div className="container">
@@ -20,7 +28,7 @@ export default class DatePicker extends Component {
           className="textField"
           id="date"
           type="date"
-          defaultValue={new Date().toISOString().substring(0, 10)}
+          defaultValue={this.getDay()}
 
           InputLabelProps={{
             shrink: true,

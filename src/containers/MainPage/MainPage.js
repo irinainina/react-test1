@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './MainPage.css';
@@ -17,99 +17,114 @@ import Description from '../../components/Description/Description';
 import Developers from '../../components/Developers/Developers';
 
 import GridGallery from '../../components/GridGalery/GridGalery';
-import ru from '../../data/people';
-import en from '../../data/peopleEN';
-import be from '../../data/peopleBE';
+import people from '../../data';
 import store from '../../store/store';
+import DatePicker from '../../components/DatePicker/DatePicker';
 
-function MainPage(props) {
-  let data;
-  if (props.lang === 'ru') {
-    data = ru;
-  } else if (props.lang === 'en') {
-    data = en;
-  } else if (props.lang === 'be') {
-    data = be;
+class MainPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      profile: '',
+      authorDay: '',
+      day: '',
+    };
+    this.data = people[this.props.lang];
   }
 
-  let authorDay;
-
-  function getProfileRand() {
-    const profileRand = Math.random() * 8;
-    authorDay = Math.floor(profileRand);
-    return Math.floor(profileRand);
+  componentWillMount() {
+    const day = this.getDay().split('-')[2] % 8;
+    this.setState({ profile: this.data[day], authorDay: day });
   }
-  const profile = data[getProfileRand()];
 
-  return (
-    <>
-      <div className="main-page" id="home">
+  componentWillUnmount() {
+    this.setState(null);
+  }
 
-        <section className="main-page-title">
-          <p>
-            <span className="portal">
-              <FormattedMessage id="headerSubtitleSpan" />
-            </span>
-            <span className="portal-subtitle">
-              <FormattedMessage id="headerSubtitle" />
-            </span>
-          </p>
-          <MainPageSliderNavigation/>
-        </section>
-        <SimpleSlider/>
-        <MainPageNavigation />
+  getDay() {
+    const date = new Date();
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+    const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+    const year = date.getFullYear();
+    this.setState({ day });
+    return `${year}-${month}-${day}`;
+  }
 
-        <section className="author-day" id="author">
-          <h2>
-            <FormattedMessage id="todayAuthor" />
-          </h2>
-          <div className="avatar-description">
-            <div className="avatar-datepicker">
-              <Avatar data={profile} />
+  onChange(event) {
+    const day = event.target.value.split('-')[2] % 8 || this.getDay().split('-')[2] % 8;
+    this.setState({ day, authorDay: day, profile: this.data[day] });
+  }
+
+  render() {
+    return (
+      <>
+        <div className="main-page" id="home">
+
+          <section className="main-page-title">
+            <p>
+              <span className="portal">
+                <FormattedMessage id="headerSubtitleSpan" />
+              </span>
+              <span className="portal-subtitle">
+                <FormattedMessage id="headerSubtitle" />
+              </span>
+            </p>
+            <MainPageSliderNavigation />
+          </section>
+          <SimpleSlider />
+          <MainPageNavigation />
+
+          <section className="author-day" id="author">
+            <h2>
+              <FormattedMessage id="todayAuthor" />
+            </h2>
+            <div className="avatar-description">
+              <div className="avatar-datepicker">
+                <Avatar data={this.state.profile} />
+                <DatePicker onChange={e => this.onChange(e)} />
+              </div>
+              <div className="description-button">
+                <Description data={this.state.profile} />
+                <Button variant="contained" className="author-day-btn">
+                  <FormattedMessage id="toAuthorPage">
+                    {text => (
+                      <Link
+                        to={`/${this.props.lang}/personalpage/person${this.state.authorDay}`}
+                        className="author-day-btn-text"
+                        id={this.state.authorDay}
+                        onClick={(e) => {
+                          store.dispatch({
+                            type: 'page',
+                            value: `/${this.props.lang}/personalpage/person${this.state.authorDay}`,
+                          });
+                          localStorage.setItem(
+                            'page',
+                            `/${this.props.lang}/personalpage/person${this.state.authorDay}`,
+                          );
+                          this.props.onButtonClick(e);
+                        }}
+                      >
+                        {text}
+                      </Link>
+                    )}
+                  </FormattedMessage>
+                </Button>
+              </div>
             </div>
-            <div className="description-button">
-              <Description data={profile} />
-              <Button variant="contained" className="author-day-btn">
-                <FormattedMessage id="toAuthorPage">
-                  {text => (
-                    <Link
-                      to={`/${props.lang}/personalpage/person${authorDay}`}
-                      className="author-day-btn-text"
-                      id={authorDay}
-                      onClick={(e) => {
-                        store.dispatch({
-                          type: 'page',
-                          value: `/${props.lang}/personalpage/person${authorDay}`,
-                        });
-                        localStorage.setItem(
-                          'page',
-                          `/${props.lang}/personalpage/person${authorDay}`,
-                        );
-                        props.onButtonClick(e);
-                      }}
-                    >
-                      {text}
-                    </Link>
-                  )}
-                </FormattedMessage>
-              </Button>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="description-mainpage" id="project-info">
-          <h2>
-            <FormattedMessage id="infoAboutPortal" />
-          </h2>
-          <FormattedHTMLMessage id="welcome" />
-          <GridGallery />
-        </section>
+          <section className="description-mainpage" id="project-info">
+            <h2>
+              <FormattedMessage id="infoAboutPortal" />
+            </h2>
+            <FormattedHTMLMessage id="welcome" />
+            <GridGallery />
+          </section>
         </div>
-        <Developers/>
-
-
-    </>
-  );
+        <Developers />
+      </>
+    );
+  }
 }
 
 MainPage.propTypes = {

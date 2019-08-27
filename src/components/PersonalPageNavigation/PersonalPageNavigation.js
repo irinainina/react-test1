@@ -10,20 +10,27 @@ import Videocam from '@material-ui/icons/Videocam';
 import LocationOn from '@material-ui/icons/LocationOn';
 
 export default class PersonalPageNavigation extends Component {
+  _isMounted = false;
+
   state = {
     top: '70px',
   }
 
   listenScrollEvent = () => {
-    if (window.scrollY > 70) {
+    if (window.scrollY > 70 && this._isMounted) {
       this.setState({ top: '0px' });
-    } else {
+    } else if (window.scrollY <= 70 && this._isMounted)  {
       this.setState({ top: '70px' });
     }
   }
 
   componentDidMount() {
+    this._isMounted = true;
     window.addEventListener('scroll', this.listenScrollEvent);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -40,7 +47,7 @@ export default class PersonalPageNavigation extends Component {
         </Button>
         <Button variant="contained" className="btn-navigation">
         <AnchorLink
-          offset='40'
+          offset='-40'
           href='#timeline'
           >
           <Event/>
