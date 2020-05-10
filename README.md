@@ -1,2 +1,2 @@
 # culture-portal
-https://irinainina.github.io/culture-portal/
+https://irinainina-culture-portal.netlify.app/#/be
